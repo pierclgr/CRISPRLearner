@@ -205,6 +205,7 @@ def encode(dataset):
 
 def encode_train_sets():
     file_list = []
+    dataset_encoded = []
     for (_, _, filenames) in os.walk(ds.rescaled_train_set_folder):
         for elem in filenames:
             file_list.append(ds.rescaled_train_set_folder + str(elem))
