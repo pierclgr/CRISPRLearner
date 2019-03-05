@@ -1,14 +1,10 @@
 import tensorflow as tf
 from sklearn.model_selection import train_test_split
-from skll.metrics import spearman
+from scipy.stats import spearmanr
 import numpy as np
 
-init = tf.global_variables_initializer()
-sess = tf.Session()
-sess.run(init)
 
-
-def cnn_ontar_reg_model():
+def cnn_ontar_reg_model(learning_rate=None):
     model = tf.keras.models.Sequential()
 
     # Convolutional Layer
@@ -52,7 +48,11 @@ def cnn_ontar_reg_model():
         activation="linear"
     ))
 
-    model.compile(optimizer="adam", loss="mse", metrics=[pearson])
+    if learning_rate is None:
+        opt = tf.keras.optimizers.Adam()
+    else:
+        opt = tf.keras.optimizers.Adam(lr=learning_rate)
+    model.compile(optimizer=opt, loss="mse", metrics=[r2_keras])
 
     return model
 
@@ -81,3 +81,18 @@ def pearson(y_true, y_pred):
     result = top / bottom
 
     return tf.keras.backend.mean(result)
+
+
+def r2_keras(y_true, y_pred):
+    ss_res = tf.keras.backend.sum(tf.keras.backend.square(y_true - y_pred))
+    ss_tot = tf.keras.backend.sum(tf.keras.backend.square(y_true - tf.keras.backend.mean(y_true)))
+    return 1 - ss_res / (ss_tot + tf.keras.backend.epsilon())
+
+
+def spearman_metric(y_true, y_pred):
+    y_true = np.array(y_true)
+    y_pred = np.array(y_pred)
+    y_true = y_true.tolist()
+    y_pred = y_pred.tolist()
+    corr, p = spearmanr(y_true, y_pred)
+
