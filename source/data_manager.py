@@ -193,24 +193,27 @@ def encode_sgrna_sequence(sequence):
 def encode(dataset):
     dataset_file = open(dataset, 'r')
     dataser_reader = csv.reader(dataset_file, delimiter='\t')
-    dataset_encoded = []
+    sequence_array = []
+    efficiency_array = []
     for row in dataser_reader:
         if len(row[0]) is 23:
-            dataset_encoded.append([encode_sgrna_sequence(str(row[0])), float(row[1])])
+            sequence_array.append(encode_sgrna_sequence(str(row[0])))
+            efficiency_array.append(float(row[1]))
         else:
             raise Exception("Dataset contains a sequence that is not a 20-bp + PAM (NGG) type sequence: " + str(row[0]))
 
-    return dataset_encoded
+    return sequence_array, efficiency_array
 
 
-def encode_train_sets():
+def encode_all_sets():
     file_list = []
-    dataset_encoded = []
+    datasets_array = []
     for (_, _, filenames) in os.walk(ds.rescaled_train_set_folder):
         for elem in filenames:
             file_list.append(ds.rescaled_train_set_folder + str(elem))
 
     for file in file_list:
-        dataset_encoded = encode(file)
+        sequence_array, efficiency_array = encode(file)
+        datasets_array.append([sequence_array, efficiency_array])
 
-    return dataset_encoded
+    return datasets_array
