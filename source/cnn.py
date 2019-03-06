@@ -1,10 +1,9 @@
 import tensorflow as tf
-from sklearn.model_selection import train_test_split
 from scipy.stats import spearmanr
 import numpy as np
 
 
-def cnn_ontar_reg_model(learning_rate=None):
+def cnn_ontar_reg_model():
     model = tf.keras.models.Sequential()
 
     # Convolutional Layer
@@ -48,11 +47,7 @@ def cnn_ontar_reg_model(learning_rate=None):
         activation="linear"
     ))
 
-    if learning_rate is None:
-        opt = tf.keras.optimizers.Adam()
-    else:
-        opt = tf.keras.optimizers.Adam(lr=learning_rate)
-    model.compile(optimizer=opt, loss="mse", metrics=[r2_keras])
+    model.compile(optimizer=tf.keras.optimizers.Adam(), loss="mse", metrics=[r2_keras])
 
     return model
 
