@@ -174,16 +174,16 @@ def encode_sgrna_sequence(sequence):
     elif len(sequence) <= 0:
         raise Exception("Sequence error (registered a sequence with negative or zero length)")
     else:
-        one_hot_matrix = np.zeros((4, len(sequence)))
+        one_hot_matrix = np.zeros((4, 30))
         for i in range(len(sequence)):
             if sequence[i] == 'A':
-                one_hot_matrix[0, i] = 1
+                one_hot_matrix[0, i+30-len(sequence)] = 1
             elif sequence[i] == 'C':
-                one_hot_matrix[1, i] = 1
+                one_hot_matrix[1, i+30-len(sequence)] = 1
             elif sequence[i] == 'G':
-                one_hot_matrix[2, i] = 1
+                one_hot_matrix[2, i+30-len(sequence)] = 1
             elif sequence[i] == 'T':
-                one_hot_matrix[3, i] = 1
+                one_hot_matrix[3, i+30-len(sequence)] = 1
             else:
                 raise Exception("Dataset contains an uncorrect sgRNA sequence: " + sequence)
 
@@ -196,21 +196,32 @@ def encode(dataset):
     sequence_array = []
     efficiency_array = []
     for row in dataser_reader:
-        if len(row[0]) is 23:
-            sequence_array.append(encode_sgrna_sequence(str(row[0])))
-            efficiency_array.append(float(row[1]))
-        else:
-            raise Exception("Dataset contains a sequence that is not a 20-bp + PAM (NGG) type sequence: " + str(row[0]))
+        sequence_array.append(encode_sgrna_sequence(str(row[0])))
+        efficiency_array.append(float(row[1]))
 
     return sequence_array, efficiency_array
 
 
-def encode_all_sets():
+def encode_all_train_sets():
     file_list = []
     datasets_array = []
     for (_, _, filenames) in os.walk(ds.rescaled_train_set_folder):
         for elem in filenames:
             file_list.append(ds.rescaled_train_set_folder + str(elem))
+
+    for file in file_list:
+        sequence_array, efficiency_array = encode(file)
+        datasets_array.append([sequence_array, efficiency_array])
+
+    return datasets_array
+
+
+def encode_all_test_sets():
+    file_list = []
+    datasets_array = []
+    for (_, _, filenames) in os.walk(ds.rescaled_test_set_folder):
+        for elem in filenames:
+            file_list.append(ds.rescaled_test_set_folder + str(elem))
 
     for file in file_list:
         sequence_array, efficiency_array = encode(file)

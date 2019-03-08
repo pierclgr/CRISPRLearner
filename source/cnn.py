@@ -1,19 +1,25 @@
 import tensorflow as tf
-from scipy.stats import spearmanr
 import numpy as np
+from scipy.stats import spearmanr
 
 
 def cnn_ontar_reg_model():
     model = tf.keras.models.Sequential()
+
+    model.add(tf.keras.layers.InputLayer(
+        input_shape=(4, 30, 1)
+    ))
 
     # Convolutional Layer
     model.add(tf.keras.layers.Conv2D(
         filters=50,
         kernel_size=(4, 4),
         strides=1,
-        padding="valid",
-        activation="relu"
+        padding="valid"
     ))
+
+    # ReLU Activation Layer
+    model.add(tf.keras.layers.Activation("relu"))
 
     # Pooling Layer
     model.add(tf.keras.layers.MaxPooling2D(
@@ -26,9 +32,11 @@ def cnn_ontar_reg_model():
 
     # First Fully-Connected (Dense) Layer
     model.add(tf.keras.layers.Dense(
-        units=128,
-        activation="relu"
+        units=128
     ))
+
+    # ReLU Activation Layer
+    model.add(tf.keras.layers.Activation("relu"))
 
     # Dropout Layer
     model.add(tf.keras.layers.Dropout(
@@ -37,24 +45,28 @@ def cnn_ontar_reg_model():
 
     # Second Fully-Connected (Dense) Layer
     model.add(tf.keras.layers.Dense(
-        units=128,
-        activation="relu"
+        units=128
     ))
 
-    # Regression Output Layer
+    # ReLU Activation Layer
+    model.add(tf.keras.layers.Activation("relu"))
+
+    # Output Layer
     model.add(tf.keras.layers.Dense(
-        units=1,
-        activation="linear"
+        units=1
     ))
 
-    model.compile(optimizer=tf.keras.optimizers.Adam(), loss="mse", metrics=[r2_keras])
+    # Linear Regression Layer
+    model.add(tf.keras.layers.Activation("linear"))
+
+    model.compile(optimizer=tf.keras.optimizers.Adam(), loss="mean_squared_error")
 
     return model
 
 
-def prepare_input(training_set):
-    features = np.array(training_set[0])
-    labels = np.array(training_set[1])
+def prepare_set(set):
+    features = np.array(set[0])
+    labels = np.array(set[1])
     features = np.reshape(features, features.shape + (1,))
     labels = np.array(labels)
     return features, labels
@@ -78,16 +90,7 @@ def pearson(y_true, y_pred):
     return tf.keras.backend.mean(result)
 
 
-def r2_keras(y_true, y_pred):
+def r2(y_true, y_pred):
     ss_res = tf.keras.backend.sum(tf.keras.backend.square(y_true - y_pred))
     ss_tot = tf.keras.backend.sum(tf.keras.backend.square(y_true - tf.keras.backend.mean(y_true)))
     return 1 - ss_res / (ss_tot + tf.keras.backend.epsilon())
-
-
-def spearman_metric(y_true, y_pred):
-    y_true = np.array(y_true)
-    y_pred = np.array(y_pred)
-    y_true = y_true.tolist()
-    y_pred = y_pred.tolist()
-    corr, p = spearmanr(y_true, y_pred)
-
