@@ -23,11 +23,26 @@ def extract_train_sets(dataset=ds.default_dataset_path):
         tsv_reader = csv.reader(tsv_dataset_file, delimiter='\t')
         for line in tsv_reader:
             if line[0] == ds.chari_293t_id:
-                chari_train_writer.writerow([line[2], line[3]])
+                long_seq = str(line[6])
+                seq = str(line[2])
+                index = long_seq.find(seq)
+                start_index = index - (30 - len(seq))
+                extracted_sequence = line[6][start_index:start_index + 30]
+                chari_train_writer.writerow([extracted_sequence, line[3]])
             elif line[0] == ds.wangxu_hl60_id:
-                wangxu_train_writer.writerow([line[2], line[3]])
+                long_seq = str(line[6])
+                seq = str(line[2])
+                index = long_seq.find(seq)
+                start_index = index - (30 - len(seq))
+                extracted_sequence = line[6][start_index:start_index + 30]
+                wangxu_train_writer.writerow([extracted_sequence, line[3]])
             elif line[0] == ds.doench_mel4_id:
-                doench_train_writer.writerow([line[2], line[3]])
+                long_seq = str(line[6])
+                seq = str(line[2])
+                index = long_seq.find(seq)
+                start_index = index - (30 - len(seq))
+                extracted_sequence = line[6][start_index:start_index + 30]
+                doench_train_writer.writerow([extracted_sequence, line[3]])
 
         tsv_dataset_file.close()
         chari_train_file.close()
@@ -70,19 +85,54 @@ def extract_test_sets(dataset=ds.default_dataset_path):
         tsv_reader = csv.reader(tsv_dataset_file, delimiter='\t')
         for line in tsv_reader:
             if line[0] == ds.doench_hg19_id:
-                doench_test_writer.writerow([line[2], line[3]])
+                long_seq = str(line[6])
+                seq = str(line[2])
+                index = long_seq.find(seq)
+                start_index = index - (30 - len(seq))
+                extracted_sequence = line[6][start_index:start_index + 30]
+                doench_test_writer.writerow([extracted_sequence, line[3]])
             elif line[0] == ds.hart_hct116_id:
-                hart_test_writer.writerow([line[2], line[3]])
+                long_seq = str(line[6])
+                seq = str(line[2])
+                index = long_seq.find(seq)
+                start_index = index - (30 - len(seq))
+                extracted_sequence = line[6][start_index:start_index + 30]
+                hart_test_writer.writerow([extracted_sequence, line[3]])
             elif line[0] == ds.moreno_mateos_id:
-                moreno_mateos_test_writer.writerow([line[2], line[3]])
+                long_seq = str(line[6])
+                seq = str(line[2])
+                index = long_seq.find(seq)
+                start_index = index - (30 - len(seq))
+                extracted_sequence = line[6][start_index:start_index + 30]
+                moreno_mateos_test_writer.writerow([extracted_sequence, line[3]])
             elif line[0] == ds.gandhi_ci2_id:
-                ghandi_test_writer.writerow([line[2], line[3]])
+                long_seq = str(line[6])
+                seq = str(line[2])
+                index = long_seq.find(seq)
+                start_index = index - (30 - len(seq))
+                extracted_sequence = line[6][start_index:start_index + 30]
+                ghandi_test_writer.writerow([extracted_sequence, line[3]])
             elif line[0] == ds.farboud_id:
-                farboud_test_writer.writerow([line[2], line[3]])
+                long_seq = str(line[6])
+                seq = str(line[2])
+                index = long_seq.find(seq)
+                start_index = index - (30 - len(seq))
+                extracted_sequence = line[6][start_index:start_index + 30]
+                farboud_test_writer.writerow([extracted_sequence, line[3]])
             elif line[0] == ds.varshney_id:
-                varshney_test_writer.writerow([line[2], line[3]])
+                long_seq = str(line[6])
+                seq = str(line[2])
+                index = long_seq.find(seq)
+                start_index = index - (30 - len(seq))
+                extracted_sequence = line[6][start_index:start_index + 30]
+                varshney_test_writer.writerow([extracted_sequence, line[3]])
             elif line[0] == ds.gagnon_id:
-                gagnon_test_writer.writerow([line[2], line[3]])
+                long_seq = str(line[6])
+                seq = str(line[2])
+                index = long_seq.find(seq)
+                start_index = index - (30 - len(seq))
+                extracted_sequence = line[6][start_index:start_index + 30]
+                gagnon_test_writer.writerow([extracted_sequence, line[3]])
 
         tsv_dataset_file.close()
         gagnon_test_file.close()
@@ -177,13 +227,13 @@ def encode_sgrna_sequence(sequence):
         one_hot_matrix = np.zeros((4, 30))
         for i in range(len(sequence)):
             if sequence[i] == 'A':
-                one_hot_matrix[0, i+30-len(sequence)] = 1
+                one_hot_matrix[0, i + 30 - len(sequence)] = 1
             elif sequence[i] == 'C':
-                one_hot_matrix[1, i+30-len(sequence)] = 1
+                one_hot_matrix[1, i + 30 - len(sequence)] = 1
             elif sequence[i] == 'G':
-                one_hot_matrix[2, i+30-len(sequence)] = 1
+                one_hot_matrix[2, i + 30 - len(sequence)] = 1
             elif sequence[i] == 'T':
-                one_hot_matrix[3, i+30-len(sequence)] = 1
+                one_hot_matrix[3, i + 30 - len(sequence)] = 1
             else:
                 raise Exception("Dataset contains an uncorrect sgRNA sequence: " + sequence)
 
@@ -198,8 +248,23 @@ def encode(dataset):
     for row in dataser_reader:
         sequence_array.append(encode_sgrna_sequence(str(row[0])))
         efficiency_array.append(float(row[1]))
+    dataset_file.close()
 
     return sequence_array, efficiency_array
+
+
+def encode_all_augmented_train_sets():
+    file_list = []
+    datasets_array = []
+    for (_, _, filenames) in os.walk(ds.augmented_train_set_folder):
+        for elem in filenames:
+            file_list.append(ds.augmented_train_set_folder + str(elem))
+
+    for file in file_list:
+        sequence_array, efficiency_array = encode(file)
+        datasets_array.append([sequence_array, efficiency_array, os.path.splitext(os.path.basename(file))[0]])
+
+    return datasets_array
 
 
 def encode_all_train_sets():
@@ -211,7 +276,7 @@ def encode_all_train_sets():
 
     for file in file_list:
         sequence_array, efficiency_array = encode(file)
-        datasets_array.append([sequence_array, efficiency_array])
+        datasets_array.append([sequence_array, efficiency_array, os.path.splitext(os.path.basename(file))[0]])
 
     return datasets_array
 
@@ -228,3 +293,56 @@ def encode_all_test_sets():
         datasets_array.append([sequence_array, efficiency_array])
 
     return datasets_array
+
+
+def augment_all_train_sets():
+    if not os.path.isdir(ds.augmented_set_folder):
+        os.mkdir(ds.augmented_set_folder)
+    else:
+        print("Augmented sets' folder already exists")
+
+    if not os.path.isdir(ds.augmented_train_set_folder):
+        os.mkdir(ds.augmented_train_set_folder)
+    else:
+        print("Augmented training sets' folder already exists")
+
+    file_list = []
+    datasets_array = []
+    for (_, _, filenames) in os.walk(ds.rescaled_train_set_folder):
+        for elem in filenames:
+            file_list.append(ds.rescaled_train_set_folder + str(elem))
+
+    for file in file_list:
+        dataset_file = open(file, 'r')
+        dataser_reader = csv.reader(dataset_file, delimiter='\t')
+        augmented_file_name = ds.augmented_train_set_folder + str(os.path.basename(file))
+        if not os.path.isfile(augmented_file_name):
+            augmented_dataset_file = open(augmented_file_name, 'w')
+            augmented_dataset_writer = csv.writer(augmented_dataset_file, delimiter='\t', quotechar='"',
+                                                  quoting=csv.QUOTE_MINIMAL)
+            for row in dataser_reader:
+                float(row[1])
+                augmented_sequences = augment_sgrna_sequence(str(row[0]))
+                for sequence in augmented_sequences:
+                    augmented_dataset_writer.writerow([sequence, float(row[1])])
+            augmented_dataset_file.close()
+        else:
+            print(os.path.basename(file) + " already augmented")
+
+        dataset_file.close()
+
+    return datasets_array
+
+
+def augment_sgrna_sequence(sequence):
+    if len(sequence) > 30:
+        raise Exception("Sequence is too long")
+    elif len(sequence) <= 0:
+        raise Exception("Sequence error (registered a sequence with negative or zero length)")
+    else:
+        augmented_sequence_list = []
+        nucleobasis = ["A", "C", "G", "T"]
+        for base1 in nucleobasis:
+            for base2 in nucleobasis:
+                augmented_sequence_list.append(sequence[0:7] + base1 + base2 + sequence[9:])
+        return augmented_sequence_list
