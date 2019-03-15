@@ -1,0 +1,7 @@
+dataset/test
+dataset/train
+dataset/rescaled
+dataset/augmented
+.DS_Store
+__pycache__/
+.idea
