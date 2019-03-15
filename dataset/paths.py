@@ -1,10 +1,12 @@
+"""
+This module contains all the paths of the default/augmented/rescaled sets
+"""
+
 default_dataset_path = "dataset/haeussler.tsv"
 
 training_set_folder = "dataset/train/"
-testing_set_folder = "dataset/test/"
 rescaled_set_folder = "dataset/rescaled/"
 rescaled_train_set_folder = "dataset/rescaled/train/"
-rescaled_test_set_folder = "dataset/rescaled/test/"
 augmented_set_folder = "dataset/augmented/"
 augmented_train_set_folder = "dataset/augmented/train/"
 
