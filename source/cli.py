@@ -56,7 +56,7 @@ def dispatch_selection(selection):
         print("Do you want to save model weights? (Y/N)")
         answer = str(input())
         answer = answer.upper()
-        
+
         while answer != "Y" and answer != "N":
             print("Answer not valid, insert a valid answer (Y/N)")
             answer = str(input())
