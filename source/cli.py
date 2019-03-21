@@ -6,6 +6,7 @@ import os
 import re
 from shutil import copyfile
 import numpy as np
+import string
 
 
 def print_menu():
@@ -50,23 +51,26 @@ def dispatch_selection(selection):
     """
 
     # If user has selected option "Train all models using all training sets"
-    if selection is "1":
+    if selection == "1":
 
         # Ask if user wants to save model weights
         print("Do you want to save model weights? (Y/N)")
-        answer = input()
-        while answer is not "Y" and answer is not "N":
+        answer = str(input())
+        answer = answer.upper()
+        2
+        while answer != "Y" and answer != "N":
             print("Answer not valid, insert a valid answer (Y/N)")
-            answer = input()
+            answer = str(input())
+            answer = answer.upper()
 
         # Save weights if users wants to
-        if answer is "Y":
+        if answer == "Y":
             train_all_models(save=True)
-        elif answer is "N":
+        elif answer == "N":
             train_all_models(save=False)
 
     # If user has selected option "Train your model using your dataset"
-    elif selection is "2":
+    elif selection == "2":
 
         # Ask user to insert the dataset path
         print("Insert your dataset path")
@@ -110,19 +114,21 @@ def dispatch_selection(selection):
 
         # Ask if user wants to save model weights
         print("Do you want to save model weights? (Y/N)")
-        answer = input()
-        while answer is not "Y" and answer is not "N":
+        answer = str(input())
+        answer = answer.upper()
+        while answer != "Y" and answer != "N":
             print("Answer not valid, insert a valid answer (Y/N)")
-            answer = input()
+            answer = str(input())
+            answer = answer.upper()
 
         # Save weights if users wants to
-        if answer is "Y":
+        if answer == "Y":
             train_model(dataset=encoded_set, save_weigths=True)
-        elif answer is "N":
+        elif answer == "N":
             train_model(dataset=encoded_set, save_weigths=False)
 
     # If user has selected option "Predict sequence efficiency"
-    elif selection is "3":
+    elif selection == "3":
 
         # If some model weights have been saved
         if os.path.isdir(ds.model_weights_folder):
@@ -178,13 +184,15 @@ def dispatch_selection(selection):
 
                 # Ask user for a sgRNA sequence
                 print("Insert your sgRNA sequence (max 30 length)")
-                sequence = input()
+                sequence = str(input())
+                sequence = sequence.upper()
 
                 # If given sequence isn't valid or it's too long, print an error and ask for a new sequence
                 while not re.match("^[ACGT]+$", str(sequence)) or len(sequence) > 30:
                     print("The sgRNA sequence you wrote is not valid or is too long, insert a valid "
                           "sgRNA sequence (max 30 length)")
-                    sequence = input()
+                    sequence = str(input())
+                    sequence = sequence.upper()
 
                 # Create cnn regression model
                 model = cnn_ontar_reg_model()
@@ -206,7 +214,7 @@ def dispatch_selection(selection):
             print("\nAction selected not valid, insert a valid action\n")
 
     # If user has selected option "Help"
-    elif selection is "9":
+    elif selection == "9":
 
         # Print command help
         print("\n"
@@ -238,7 +246,7 @@ def dispatch_selection(selection):
               "Selecting command \"0) Quit\", the system is closed.")
 
     # If user has selected option "Quit"
-    elif selection is "0":
+    elif selection == "0":
 
         # Do nothing
         pass
