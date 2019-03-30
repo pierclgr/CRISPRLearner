@@ -100,7 +100,7 @@ def train_model(dataset, save_weigths=True, verbose=1):
     Trains a cnn regression model using the given dataset
 
     :param dataset: training set
-    :param save_weigths: boolean to indicate if the user wants to save model's weights or not
+    :param save_weigths: boolean to indicate if the user wants to save model weights or not
     :param verbose: verbose mode
     :return: trained model
     """
@@ -148,23 +148,23 @@ def train_model(dataset, save_weigths=True, verbose=1):
 
 def train_all_models(verbose=1, save=True):
     """
-    Trains models using all training sets in the training sets' folder
+    Trains models using all training sets in the training sets folder
 
     :param verbose: verbose mode
-    :param save: specifies if user wants to save model's weights or not
+    :param save: specifies if user wants to save model weights or not
     :return: None
     """
 
-    # Extract all sets from Haeussler, saving them in training sets' folder
+    # Extract all sets from Haeussler, saving them in training sets folder
     extract_all_sets()
 
-    # Rescale all sets in training sets' folder
+    # Rescale all sets in training sets folder
     rescale_all_sets()
 
-    # Augment all sets in rescaled training sets' folder
+    # Augment all sets in rescaled training sets folder
     augment_all_sets()
 
-    # Encode all sets in augmented training sets' folder
+    # Encode all sets in augmented training sets folder
     train_sets_array = encode_all_augmented_sets()
 
     # For each augmented training set
@@ -175,18 +175,18 @@ def train_all_models(verbose=1, save=True):
 
 def save_model_weights(model, name):
     """
-    Saves the specified model's weights
+    Saves the specified model weights
 
     :param model: model which weights are going to be saved
     :param name: name of the model
     :return: None
     """
 
-    # Create weights' folder if it does not exist
+    # Create weights folder if it does not exist
     if not os.path.isdir(ds.model_weights_folder):
         os.mkdir(ds.model_weights_folder)
 
-    # Save given model's weights
+    # Save given model weights
     model.save_weights(ds.model_weights_folder + name + ".hdf5")
 
 
@@ -199,7 +199,7 @@ def load_model_weights(model, name):
     :return: model with weights loaded
     """
 
-    # Load given model's weight
+    # Load given model weight
     model.load_weights(ds.model_weights_folder + name + ".hdf5")
 
     return model

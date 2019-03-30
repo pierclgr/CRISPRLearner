@@ -43,7 +43,7 @@ def print_menu():
 
 def dispatch_selection(selection):
     """
-    Performs command given from the user
+    Performs command specified by the user
 
     :param selection: command to perform
     :return: None
@@ -79,15 +79,15 @@ def dispatch_selection(selection):
         if not os.path.isdir(ds.training_set_folder):
             os.mkdir(ds.training_set_folder)
 
-        # Copy user's dataset into training sets' folder if it does not exist
+        # Copy user's dataset into training sets folder if it does not exist
         if not os.path.isfile(ds.training_set_folder + os.path.basename(path)):
             copyfile(path, ds.training_set_folder + os.path.basename(path))
 
-        # Create rescaled sets' folder if it does not exist
+        # Create rescaled sets folder if it does not exist
         if not os.path.isdir(ds.rescaled_set_folder):
             os.mkdir(ds.rescaled_set_folder)
 
-        # Create rescaled training sets' folder if it does not exist
+        # Create rescaled training sets folder if it does not exist
         if not os.path.isdir(ds.rescaled_train_set_folder):
             os.mkdir(ds.rescaled_train_set_folder)
 
@@ -95,11 +95,11 @@ def dispatch_selection(selection):
         rescaled_set_file = ds.rescaled_train_set_folder + os.path.basename(path)
         rescale(ds.training_set_folder + os.path.basename(path))
 
-        # Create augmented sets' folder if it does not exist
+        # Create augmented sets folder if it does not exist
         if not os.path.isdir(ds.augmented_set_folder):
             os.mkdir(ds.augmented_set_folder)
 
-        # Create augmented training sets' folder if it does not exist
+        # Create augmented training sets folder if it does not exist
         if not os.path.isdir(ds.augmented_train_set_folder):
             os.mkdir(ds.augmented_train_set_folder)
 

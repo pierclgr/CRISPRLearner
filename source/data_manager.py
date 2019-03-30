@@ -17,7 +17,7 @@ def extract_all_sets(dataset=ds.default_dataset_path):
     :return: None
     """
 
-    # Create training sets' directory if it does not exist
+    # Create training sets directory if it does not exist
     if not os.path.isdir(ds.training_set_folder):
         os.mkdir(ds.training_set_folder)
 
@@ -294,20 +294,20 @@ def minmax_rescaler(min_efficiency, max_efficiency, efficiency):
 
 def rescale_all_sets():
     """
-    Rescale all sets' efficiencies in the training set directory
+    Rescale all efficiencies of the sets in the training set directory
 
     :return: None
     """
 
-    # Create rescaled sets' folder if it does not exist
+    # Create rescaled sets folder if it does not exist
     if not os.path.isdir(ds.rescaled_set_folder):
         os.mkdir(ds.rescaled_set_folder)
 
-    # Create rescaled training sets'
+    # Create rescaled training sets folder if it does not exist
     if not os.path.isdir(ds.rescaled_train_set_folder):
         os.mkdir(ds.rescaled_train_set_folder)
 
-    # For each dataset in training sets' folder
+    # For each dataset in training sets folder
     for (_, _, filenames) in os.walk(ds.training_set_folder):
         for elem in filenames:
             file = ds.training_set_folder + str(elem)
@@ -356,7 +356,7 @@ def encode_sgrna_sequence(sequence):
 
 def encode(dataset):
     """
-    Encode the given dataset's sequences
+    Encode the given dataset sequences
 
     :param dataset: path of the dataset file to encode
     :return: a list of encoded sequences and a list of their respective efficiencies
@@ -375,7 +375,7 @@ def encode(dataset):
         # Encode the current sequence and add it to the encoded sequences list
         sequence_array.append(encode_sgrna_sequence(str(row[0])))
 
-        # Add the current sequence's efficiency to the efficiency list
+        # Add the current sequence efficiency to the efficiency list
         efficiency_array.append(float(row[1]))
 
     # Close dataset file
@@ -386,7 +386,7 @@ def encode(dataset):
 
 def encode_all_augmented_sets():
     """
-    Encode all sets' sequences in the augmented training sets' folder
+    Encode all sequences of all sets in the augmented training sets folder
 
     :return: a list of encoded datasets
     """
@@ -394,7 +394,7 @@ def encode_all_augmented_sets():
     # Create an empty list of encoded datasets
     datasets_array = []
 
-    # For each dataset in the augmented training sets' folder
+    # For each dataset in the augmented training sets folder
     for (_, _, filenames) in os.walk(ds.augmented_train_set_folder):
         for elem in filenames:
             file = ds.augmented_train_set_folder + str(elem)
@@ -410,7 +410,7 @@ def encode_all_augmented_sets():
 
 def encode_all_sets():
     """
-    Encode all sets' sequences in the rescaled training sets' folder
+    Encode all sequences of all sets in the rescaled training sets folder
 
     :return: a list of encoded datasets
     """
@@ -418,7 +418,7 @@ def encode_all_sets():
     # Create an empty list of encoded datasets
     datasets_array = []
 
-    # For each dataset in the augmented training sets' folder
+    # For each dataset in the augmented training sets folder
     for (_, _, filenames) in os.walk(ds.rescaled_train_set_folder):
         for elem in filenames:
             file = ds.rescaled_train_set_folder + str(elem)
@@ -434,20 +434,20 @@ def encode_all_sets():
 
 def augment_all_sets():
     """
-    Augment all sets' in the rescaled training sets' folder
+    Augment all sets in the rescaled training sets folder
 
     :return: None
     """
 
-    # Create an augmented sets' folder if it does not exist
+    # Create an augmented sets folder if it does not exist
     if not os.path.isdir(ds.augmented_set_folder):
         os.mkdir(ds.augmented_set_folder)
 
-    # Create an augmented training sets' folder if it does not exist
+    # Create an augmented training sets folder if it does not exist
     if not os.path.isdir(ds.augmented_train_set_folder):
         os.mkdir(ds.augmented_train_set_folder)
 
-    # For each dataset in the rescaled training sets' folder
+    # For each dataset in the rescaled training sets folder
     for (_, _, filenames) in os.walk(ds.rescaled_train_set_folder):
         for elem in filenames:
             file = ds.rescaled_train_set_folder + str(elem)
@@ -458,7 +458,7 @@ def augment_all_sets():
 
 def augment(dataset):
     """
-    Augment the given dataset's sequences generating permutations in the first two position of the PAM-distal region
+    Augment the given dataset sequences generating permutations in the first two position of the PAM-distal region
     (5' end)
 
     :param dataset: path of the dataset file to augment
@@ -485,7 +485,7 @@ def augment(dataset):
 
             # For each sequence in the augmented sequences list
             for sequence in augmented_sequences:
-                # Write the current augmented sequence with the original sequence's efficiency to the augmented set file
+                # Write the current augmented sequence with the original sequence efficiency to the augmented set file
                 augmented_dataset_writer.writerow([sequence, float(row[1])])
 
         # Close augmented set file
