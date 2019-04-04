@@ -227,7 +227,8 @@ def dispatch_selection(selection):
               "Selecting command \"2) Train a model using your dataset\", the system allows the user to load a\n"
               "custom dataset and train a model using this dataset. Before the training task, our system copies\n"
               "user dataset into training sets folder, making it available for future calls of \"2)\" command.\n"
-              "Before performing the train task, the system rescales, augments and encodes the given dataset.")
+              "Before performing the train task, the system rescales, augments and encodes the given dataset.\n"
+              "The provided dataset must necessarily have 30-bp sequences, otherwhise the system will give an error.")
 
         # If some model weights have been saved
         if os.path.isdir(ds.model_weights_folder):
