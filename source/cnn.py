@@ -8,6 +8,7 @@ from sklearn.utils import shuffle
 from sklearn.model_selection import train_test_split
 from source.data_manager import extract_all_sets, rescale_all_sets, augment_all_sets, \
     encode_all_augmented_sets
+import matplotlib.pyplot as plt
 
 
 def cnn_ontar_reg_model():
@@ -22,7 +23,7 @@ def cnn_ontar_reg_model():
 
     # Input layer
     model.add(tf.keras.layers.InputLayer(
-        input_shape=(4, 30, 1)
+        input_shape=(4, 23, 1)
     ))
 
     # Convolutional Layer
@@ -123,11 +124,14 @@ def train_model(dataset, save_weigths=True, verbose=1):
                                                                               shuffle=True)
 
     # Start training
-    model.fit(x=train_features, y=train_labels, epochs=250, batch_size=40, verbose=verbose,
-              validation_data=(val_features, val_labels), callbacks=[early_stopping])
+    history = model.fit(x=train_features, y=train_labels, epochs=250, verbose=verbose,
+                        validation_data=(val_features, val_labels), callbacks=[early_stopping])
 
     # Evaluate model using validation set
     loss = model.evaluate(x=val_features, y=val_labels, verbose=verbose)
+
+    # Plot training history
+    plot_history(history, name)
 
     # Predict efficiencies for validation set
     y_pred = model.predict(x=val_features)
@@ -203,3 +207,27 @@ def load_model_weights(model, name):
     model.load_weights(ds.model_weights_folder + name + ".hdf5")
 
     return model
+
+
+def plot_history(history, dataset):
+    """
+    Plots and saves model history
+
+    :param history: history of model to plot
+    :param dataset: dataset name
+    :return:
+    """
+
+    # Create histories folder if it does not exist
+    if not os.path.isdir(ds.model_histories_folder):
+        os.mkdir(ds.model_histories_folder)
+
+    # Plot and save history
+    plt.plot(history.history['loss'])
+    plt.plot(history.history['val_loss'])
+    plt.title(dataset + " loss")
+    plt.ylabel('loss')
+    plt.xlabel('epoch')
+    plt.legend(['train', 'test'], loc='upper right')
+    plt.savefig(ds.model_histories_folder + dataset + ".png")
+    plt.clf()

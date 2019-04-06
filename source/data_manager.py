@@ -21,9 +21,16 @@ def extract_all_sets(dataset=ds.default_dataset_path):
     if not os.path.isdir(ds.training_set_folder):
         os.mkdir(ds.training_set_folder)
 
-    # If chari_293t, wangxu_hl60 and doench_mel4 datasets are not extracted from Haeussler, extract them
+    # If datasets are not extracted from Haeussler, extract them
     if not os.path.isfile(ds.training_set_folder + ds.chari_293t) or not os.path.isfile(
-            ds.training_set_folder + ds.wangxu_hl60) or not os.path.isfile(ds.training_set_folder + ds.doench_mel4):
+            ds.training_set_folder + ds.wangxu_hl60) or not os.path.isfile(
+        ds.training_set_folder + ds.doench_mel4) or not os.path.isfile(
+        ds.training_set_folder + ds.doench_hg19) or not os.path.isfile(
+        ds.training_set_folder + ds.hart_hct116) or not os.path.isfile(
+        ds.training_set_folder + ds.moreno_mateos) or not os.path.isfile(
+        ds.training_set_folder + ds.gandhi_ci2) or not os.path.isfile(
+        ds.training_set_folder + ds.farboud) or not os.path.isfile(
+        ds.training_set_folder + ds.varshney) or not os.path.isfile(ds.training_set_folder + ds.gagnon):
 
         # Create dataset files and writers
         chari_train_file = open(ds.training_set_folder + ds.chari_293t, 'w')
@@ -32,69 +39,6 @@ def extract_all_sets(dataset=ds.default_dataset_path):
         wangxu_train_writer = csv.writer(wangxu_train_file, delimiter='\t', quotechar='"', quoting=csv.QUOTE_MINIMAL)
         doench_train_file = open(ds.training_set_folder + ds.doench_mel4, 'w')
         doench_train_writer = csv.writer(doench_train_file, delimiter='\t', quotechar='"', quoting=csv.QUOTE_MINIMAL)
-
-        # Open Haeussler dataset file and reader
-        tsv_dataset_file = open(dataset, 'r')
-        tsv_reader = csv.reader(tsv_dataset_file, delimiter='\t')
-
-        # For each line in the dataset
-        for line in tsv_reader:
-
-            # If current line belongs to chari_293t dataset
-            if line[0] == ds.chari_293t_id:
-
-                # Extract the 30-bp sequence from longSeq column
-                long_seq = str(line[6])
-                seq = str(line[2])
-                index = long_seq.find(seq)
-                start_index = index - (30 - len(seq))
-                extracted_sequence = line[6][start_index:start_index + 30]
-
-                # Save 30-bp sequence and its relative efficiency in chari_293T dataset file
-                chari_train_writer.writerow([extracted_sequence, line[3]])
-
-            # If current line belongs to wangxu_hl60 dataset
-            elif line[0] == ds.wangxu_hl60_id:
-
-                # Extract the 30-bp full sequence from longSeq column
-                long_seq = str(line[6])
-                seq = str(line[2])
-                index = long_seq.find(seq)
-                start_index = index - (30 - len(seq))
-                extracted_sequence = line[6][start_index:start_index + 30]
-
-                # Save 30-bp sequence and its relative efficiency to wangxu_hl60 dataset file
-                wangxu_train_writer.writerow([extracted_sequence, line[3]])
-
-            # If current line belongs to doench_mel4 dataset
-            elif line[0] == ds.doench_mel4_id:
-
-                # Extract the 30-bp full sequence from longSeq column
-                long_seq = str(line[6])
-                seq = str(line[2])
-                index = long_seq.find(seq)
-                start_index = index - (30 - len(seq))
-                extracted_sequence = line[6][start_index:start_index + 30]
-
-                # Save 30-bp sequence and its relative efficiency to doench_mel4 dataset file
-                doench_train_writer.writerow([extracted_sequence, line[3]])
-
-        # Close all files
-        tsv_dataset_file.close()
-        chari_train_file.close()
-        wangxu_train_file.close()
-        doench_train_file.close()
-
-    # If doench_hg19, hart_hct116, moreno_mateos, ghandi_ci2, farboud, varshney and gagnon datasets are not extracted
-    # from Haeussler dataset, extract them
-    if not os.path.isfile(ds.training_set_folder + ds.doench_hg19) or not os.path.isfile(
-            ds.training_set_folder + ds.hart_hct116) or not os.path.isfile(
-        ds.training_set_folder + ds.moreno_mateos) or not os.path.isfile(
-        ds.training_set_folder + ds.gandhi_ci2) or not os.path.isfile(
-        ds.training_set_folder + ds.farboud) or not os.path.isfile(
-        ds.training_set_folder + ds.varshney) or not os.path.isfile(ds.training_set_folder + ds.gagnon):
-
-        # Create dataset files and writers
         doench_test_file = open(ds.training_set_folder + ds.doench_hg19, 'w')
         doench_test_writer = csv.writer(doench_test_file, delimiter='\t', quotechar='"', quoting=csv.QUOTE_MINIMAL)
         hart_test_file = open(ds.training_set_folder + ds.hart_hct116, 'w')
@@ -113,106 +57,318 @@ def extract_all_sets(dataset=ds.default_dataset_path):
         gagnon_test_file = open(ds.training_set_folder + ds.gagnon, 'w')
         gagnon_test_writer = csv.writer(gagnon_test_file, delimiter='\t', quotechar='"', quoting=csv.QUOTE_MINIMAL)
 
-        # Open Haeussler file and reader
+        # Open Haeussler dataset file and reader
         tsv_dataset_file = open(dataset, 'r')
         tsv_reader = csv.reader(tsv_dataset_file, delimiter='\t')
 
         # For each line in the dataset
         for line in tsv_reader:
 
-            # If the current line belongs to doench_hg19 dataset
-            if line[0] == ds.doench_hg19_id:
+            # If current line belongs to chari_293t dataset
+            if line[0] == ds.chari_293t_id:
 
-                # Extract the 30-bp full sequence from longSeq column
-                long_seq = str(line[6])
+                # Extract the 23-bp sequence from longSeq column
                 seq = str(line[2])
-                index = long_seq.find(seq)
-                start_index = index - (30 - len(seq))
-                extracted_sequence = line[6][start_index:start_index + 30]
 
-                # Save 30-bp sequence and its relative efficiency to doench_hg19 dataset file
+                if len(seq) == 23:
+                    if seq[len(seq) - 1] == 'G' and seq[len(seq) - 2] == 'G':
+                        extracted_sequence = seq
+                    else:
+                        break
+                elif len(seq) <= 23:
+                    if seq[len(seq) - 1] == 'G' and seq[len(seq) - 2] == 'G':
+                        long_seq = str(line[6])
+                        index = long_seq.find(seq)
+                        start_index = index - (23 - len(seq))
+                        extracted_sequence = line[6][start_index:start_index + 23]
+                    else:
+                        long_seq = str(line[6])
+                        index = long_seq.find(seq)
+                        extracted_sequence = line[6][index:index + 23]
+                        if not extracted_sequence[len(extracted_sequence) - 1] == 'G' or not extracted_sequence[len(
+                                extracted_sequence) - 2] == 'G':
+                            break
+                else:
+                    break
+
+                # Save 23-bp sequence and its relative efficiency in chari_293T dataset file
+                chari_train_writer.writerow([extracted_sequence, line[3]])
+
+            # If current line belongs to wangxu_hl60 dataset
+            elif line[0] == ds.wangxu_hl60_id:
+
+                # Extract the 23-bp sequence from longSeq column
+                seq = str(line[2])
+
+                if len(seq) == 23:
+                    if seq[len(seq) - 1] == 'G' and seq[len(seq) - 2] == 'G':
+                        extracted_sequence = seq
+                    else:
+                        break
+                elif len(seq) <= 23:
+                    if seq[len(seq) - 1] == 'G' and seq[len(seq) - 2] == 'G':
+                        long_seq = str(line[6])
+                        index = long_seq.find(seq)
+                        start_index = index - (23 - len(seq))
+                        extracted_sequence = line[6][start_index:start_index + 23]
+                    else:
+                        long_seq = str(line[6])
+                        index = long_seq.find(seq)
+                        extracted_sequence = line[6][index:index + 23]
+                        if not extracted_sequence[len(extracted_sequence) - 1] == 'G' or not extracted_sequence[len(
+                                extracted_sequence) - 2] == 'G':
+                            break
+                else:
+                    break
+
+                # Save 23-bp sequence and its relative efficiency to wangxu_hl60 dataset file
+                wangxu_train_writer.writerow([extracted_sequence, line[3]])
+
+            # If current line belongs to doench_mel4 dataset
+            elif line[0] == ds.doench_mel4_id:
+
+                # Extract the 23-bp sequence from longSeq column
+                seq = str(line[2])
+
+                if len(seq) == 23:
+                    if seq[len(seq) - 1] == 'G' and seq[len(seq) - 2] == 'G':
+                        extracted_sequence = seq
+                    else:
+                        break
+                elif len(seq) <= 23:
+                    if seq[len(seq) - 1] == 'G' and seq[len(seq) - 2] == 'G':
+                        long_seq = str(line[6])
+                        index = long_seq.find(seq)
+                        start_index = index - (23 - len(seq))
+                        extracted_sequence = line[6][start_index:start_index + 23]
+                    else:
+                        long_seq = str(line[6])
+                        index = long_seq.find(seq)
+                        extracted_sequence = line[6][index:index + 23]
+                        if not extracted_sequence[len(extracted_sequence) - 1] == 'G' or not extracted_sequence[len(
+                                extracted_sequence) - 2] == 'G':
+                            break
+                else:
+                    break
+
+                # Save 23-bp sequence and its relative efficiency to doench_mel4 dataset file
+                doench_train_writer.writerow([extracted_sequence, line[3]])
+
+            # If the current line belongs to doench_hg19 dataset
+            elif line[0] == ds.doench_hg19_id:
+
+                # Extract the 23-bp sequence from longSeq column
+                seq = str(line[2])
+
+                if len(seq) == 23:
+                    if seq[len(seq) - 1] == 'G' and seq[len(seq) - 2] == 'G':
+                        extracted_sequence = seq
+                    else:
+                        break
+                elif len(seq) <= 23:
+                    if seq[len(seq) - 1] == 'G' and seq[len(seq) - 2] == 'G':
+                        long_seq = str(line[6])
+                        index = long_seq.find(seq)
+                        start_index = index - (23 - len(seq))
+                        extracted_sequence = line[6][start_index:start_index + 23]
+                    else:
+                        long_seq = str(line[6])
+                        index = long_seq.find(seq)
+                        extracted_sequence = line[6][index:index + 23]
+                        if not extracted_sequence[len(extracted_sequence) - 1] == 'G' or not extracted_sequence[len(
+                                extracted_sequence) - 2] == 'G':
+                            break
+                else:
+                    break
+
+                # Save 23-bp sequence and its relative efficiency to doench_hg19 dataset file
                 doench_test_writer.writerow([extracted_sequence, line[3]])
 
             # If the current line belongs to hart_hct116 dataset
             elif line[0] == ds.hart_hct116_id:
 
-                # Extract the 30-bp full sequence from longSeq column
-                long_seq = str(line[6])
+                # Extract the 23-bp sequence from longSeq column
                 seq = str(line[2])
-                index = long_seq.find(seq)
-                start_index = index - (30 - len(seq))
-                extracted_sequence = line[6][start_index:start_index + 30]
 
-                # Save 30-bp sequence and its relative efficiency to hart_hct116 dataset file
+                if len(seq) == 23:
+                    if seq[len(seq) - 1] == 'G' and seq[len(seq) - 2] == 'G':
+                        extracted_sequence = seq
+                    else:
+                        break
+                elif len(seq) <= 23:
+                    if seq[len(seq) - 1] == 'G' and seq[len(seq) - 2] == 'G':
+                        long_seq = str(line[6])
+                        index = long_seq.find(seq)
+                        start_index = index - (23 - len(seq))
+                        extracted_sequence = line[6][start_index:start_index + 23]
+                    else:
+                        long_seq = str(line[6])
+                        index = long_seq.find(seq)
+                        extracted_sequence = line[6][index:index + 23]
+                        if not extracted_sequence[len(extracted_sequence) - 1] == 'G' or not extracted_sequence[len(
+                                extracted_sequence) - 2] == 'G':
+                            break
+                else:
+                    break
+
+                # Save 23-bp sequence and its relative efficiency to hart_hct116 dataset file
                 hart_test_writer.writerow([extracted_sequence, line[3]])
 
             # If the current line belongs to moreno_mateos dataset
             elif line[0] == ds.moreno_mateos_id:
 
-                # Extract the 30-bp full sequence from longSeq column
-                long_seq = str(line[6])
+                # Extract the 23-bp sequence from longSeq column
                 seq = str(line[2])
-                index = long_seq.find(seq)
-                start_index = index - (30 - len(seq))
-                extracted_sequence = line[6][start_index:start_index + 30]
 
-                # Save 30-bp sequence and its relative efficiency to moreno_mateos dataset file
+                if len(seq) == 23:
+                    if seq[len(seq) - 1] == 'G' and seq[len(seq) - 2] == 'G':
+                        extracted_sequence = seq
+                    else:
+                        break
+                elif len(seq) <= 23:
+                    if seq[len(seq) - 1] == 'G' and seq[len(seq) - 2] == 'G':
+                        long_seq = str(line[6])
+                        index = long_seq.find(seq)
+                        start_index = index - (23 - len(seq))
+                        extracted_sequence = line[6][start_index:start_index + 23]
+                    else:
+                        long_seq = str(line[6])
+                        index = long_seq.find(seq)
+                        extracted_sequence = line[6][index:index + 23]
+                        if not extracted_sequence[len(extracted_sequence) - 1] == 'G' or not extracted_sequence[len(
+                                extracted_sequence) - 2] == 'G':
+                            break
+                else:
+                    break
+
+                # Save 23-bp sequence and its relative efficiency to moreno_mateos dataset file
                 moreno_mateos_test_writer.writerow([extracted_sequence, line[3]])
 
             # If the current line belongs to gandhi_ci2 dataset
             elif line[0] == ds.gandhi_ci2_id:
 
-                # Extract the 30-bp full sequence from longSeq column
-                long_seq = str(line[6])
+                # Extract the 23-bp sequence from longSeq column
                 seq = str(line[2])
-                index = long_seq.find(seq)
-                start_index = index - (30 - len(seq))
-                extracted_sequence = line[6][start_index:start_index + 30]
 
-                # Save 30-bp sequence and its relative efficiency to gandhi_ci2 dataset file
+                if len(seq) == 23:
+                    if seq[len(seq) - 1] == 'G' and seq[len(seq) - 2] == 'G':
+                        extracted_sequence = seq
+                    else:
+                        break
+                elif len(seq) <= 23:
+                    if seq[len(seq) - 1] == 'G' and seq[len(seq) - 2] == 'G':
+                        long_seq = str(line[6])
+                        index = long_seq.find(seq)
+                        start_index = index - (23 - len(seq))
+                        extracted_sequence = line[6][start_index:start_index + 23]
+                    else:
+                        long_seq = str(line[6])
+                        index = long_seq.find(seq)
+                        extracted_sequence = line[6][index:index + 23]
+                        if not extracted_sequence[len(extracted_sequence) - 1] == 'G' or not extracted_sequence[len(
+                                extracted_sequence) - 2] == 'G':
+                            break
+                else:
+                    break
+
+                # Save 23-bp sequence and its relative efficiency to gandhi_ci2 dataset file
                 ghandi_test_writer.writerow([extracted_sequence, line[3]])
 
             # If the current line belongs to farboud dataset
             elif line[0] == ds.farboud_id:
 
-                # Extract the 30-bp full sequence from longSeq column
-                long_seq = str(line[6])
+                # Extract the 23-bp sequence from longSeq column
                 seq = str(line[2])
-                index = long_seq.find(seq)
-                start_index = index - (30 - len(seq))
-                extracted_sequence = line[6][start_index:start_index + 30]
 
-                # Save 30-bp sequence and its relative efficiency to farboud dataset file
+                if len(seq) == 23:
+                    if seq[len(seq) - 1] == 'G' and seq[len(seq) - 2] == 'G':
+                        extracted_sequence = seq
+                    else:
+                        break
+                elif len(seq) <= 23:
+                    if seq[len(seq) - 1] == 'G' and seq[len(seq) - 2] == 'G':
+                        long_seq = str(line[6])
+                        index = long_seq.find(seq)
+                        start_index = index - (23 - len(seq))
+                        extracted_sequence = line[6][start_index:start_index + 23]
+                    else:
+                        long_seq = str(line[6])
+                        index = long_seq.find(seq)
+                        extracted_sequence = line[6][index:index + 23]
+                        if not extracted_sequence[len(extracted_sequence) - 1] == 'G' or not extracted_sequence[len(
+                                extracted_sequence) - 2] == 'G':
+                            break
+                else:
+                    break
+
+                # Save 23-bp sequence and its relative efficiency to farboud dataset file
                 farboud_test_writer.writerow([extracted_sequence, line[3]])
 
             # If the current line belongs to varshney dataset
             elif line[0] == ds.varshney_id:
 
-                # Extract the 30-bp full sequence from longSeq column
-                long_seq = str(line[6])
+                # Extract the 23-bp sequence from longSeq column
                 seq = str(line[2])
-                index = long_seq.find(seq)
-                start_index = index - (30 - len(seq))
-                extracted_sequence = line[6][start_index:start_index + 30]
 
-                # Save 30-bp sequence and its relative efficiency to varshney dataset file
+                if len(seq) == 23:
+                    if seq[len(seq) - 1] == 'G' and seq[len(seq) - 2] == 'G':
+                        extracted_sequence = seq
+                    else:
+                        break
+                elif len(seq) <= 23:
+                    if seq[len(seq) - 1] == 'G' and seq[len(seq) - 2] == 'G':
+                        long_seq = str(line[6])
+                        index = long_seq.find(seq)
+                        start_index = index - (23 - len(seq))
+                        extracted_sequence = line[6][start_index:start_index + 23]
+                    else:
+                        long_seq = str(line[6])
+                        index = long_seq.find(seq)
+                        extracted_sequence = line[6][index:index + 23]
+                        if not extracted_sequence[len(extracted_sequence) - 1] == 'G' or not extracted_sequence[len(
+                                extracted_sequence) - 2] == 'G':
+                            break
+                else:
+                    break
+
+                # Save 23-bp sequence and its relative efficiency to varshney dataset file
                 varshney_test_writer.writerow([extracted_sequence, line[3]])
 
             # If the current line belongs to gagnon dataset
             elif line[0] == ds.gagnon_id:
 
-                # Extract the 30-bp full sequence from longSeq column
-                long_seq = str(line[6])
+                # Extract the 23-bp sequence from longSeq column
                 seq = str(line[2])
-                index = long_seq.find(seq)
-                start_index = index - (30 - len(seq))
-                extracted_sequence = line[6][start_index:start_index + 30]
 
-                # Save 30-bp sequence and its relative efficiency to gagnon dataset file
+                if len(seq) == 23:
+                    if seq[len(seq) - 1] == 'G' and seq[len(seq) - 2] == 'G':
+                        extracted_sequence = seq
+                    else:
+                        break
+                elif len(seq) <= 23:
+                    if seq[len(seq) - 1] == 'G' and seq[len(seq) - 2] == 'G':
+                        long_seq = str(line[6])
+                        index = long_seq.find(seq)
+                        start_index = index - (23 - len(seq))
+                        extracted_sequence = line[6][start_index:start_index + 23]
+                    else:
+                        long_seq = str(line[6])
+                        index = long_seq.find(seq)
+                        extracted_sequence = line[6][index:index + 23]
+                        if not extracted_sequence[len(extracted_sequence) - 1] == 'G' or not extracted_sequence[len(
+                                extracted_sequence) - 2] == 'G':
+                            break
+                else:
+                    break
+
+                # Save 23-bp sequence and its relative efficiency to gagnon dataset file
                 gagnon_test_writer.writerow([extracted_sequence, line[3]])
 
         # Close all files
         tsv_dataset_file.close()
+        chari_train_file.close()
+        wangxu_train_file.close()
+        doench_train_file.close()
         gagnon_test_file.close()
         varshney_test_file.close()
         farboud_test_file.close()
@@ -328,26 +484,26 @@ def encode_sgrna_sequence(sequence):
     :return: one-hot encoded matrix
     """
 
-    # If the given sequence is longer than 30 or shorter than 0 throw and exception
-    if len(sequence) > 30:
+    # If the given sequence is longer than 23 or shorter than 0 throw and exception
+    if len(sequence) > 23:
         raise Exception("Sequence is too long")
     elif len(sequence) <= 0:
         raise Exception("Sequence error (registered a sequence with negative or zero length)")
 
-    # Else encode the sequence into a 4x30 one-hot matrix; if the sequence is shorter than 30, add 30 - len(sequence)
+    # Else encode the sequence into a 4x23 one-hot matrix; if the sequence is shorter than 23, add 23 - len(sequence)
     # columns of zeros at the beginning of the matrix
     else:
-        one_hot_matrix = np.zeros((4, 30))
+        one_hot_matrix = np.zeros((4, 23))
 
         for i in range(len(sequence)):
             if sequence[i] == 'A':
-                one_hot_matrix[0, i + 30 - len(sequence)] = 1
+                one_hot_matrix[0, i + 23 - len(sequence)] = 1
             elif sequence[i] == 'C':
-                one_hot_matrix[1, i + 30 - len(sequence)] = 1
+                one_hot_matrix[1, i + 23 - len(sequence)] = 1
             elif sequence[i] == 'G':
-                one_hot_matrix[2, i + 30 - len(sequence)] = 1
+                one_hot_matrix[2, i + 23 - len(sequence)] = 1
             elif sequence[i] == 'T':
-                one_hot_matrix[3, i + 30 - len(sequence)] = 1
+                one_hot_matrix[3, i + 23 - len(sequence)] = 1
             else:
                 raise Exception("Dataset contains an uncorrect sgRNA sequence: " + sequence)
 
@@ -503,8 +659,8 @@ def augment_sgrna_sequence(sequence):
     :return: a list containing the augmented sequences
     """
 
-    # Throw an exception if sequence is longer than 30 or shorter/equal than 0
-    if len(sequence) > 30:
+    # Throw an exception if sequence is longer than 23 or shorter/equal than 0
+    if len(sequence) > 23:
         raise Exception("Sequence is too long")
     elif len(sequence) <= 0:
         raise Exception("Sequence error (registered a sequence with negative or zero length)")
@@ -515,6 +671,6 @@ def augment_sgrna_sequence(sequence):
         nucleobasis = ["A", "C", "G", "T"]
         for base1 in nucleobasis:
             for base2 in nucleobasis:
-                augmented_sequence_list.append(sequence[0:7] + base1 + base2 + sequence[9:])
+                augmented_sequence_list.append(base1 + base2 + sequence[2:])
 
         return augmented_sequence_list

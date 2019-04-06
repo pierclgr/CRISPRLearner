@@ -182,14 +182,14 @@ def dispatch_selection(selection):
                     model_selection = int(input())
 
                 # Ask user for a sgRNA sequence
-                print("Insert your sgRNA sequence (max 30 length)")
+                print("Insert your sgRNA sequence (max 23 length)")
                 sequence = str(input())
                 sequence = sequence.upper()
 
                 # If given sequence isn't valid or it's too long, print an error and ask for a new sequence
-                while not re.match("^[ACGT]+$", str(sequence)) or len(sequence) > 30:
+                while not re.match("^[ACGT]+$", str(sequence)) or len(sequence) > 23:
                     print("The sgRNA sequence you wrote is not valid or is too long, insert a valid "
-                          "sgRNA sequence (max 30 length)")
+                          "sgRNA sequence (max 23 length)")
                     sequence = str(input())
                     sequence = sequence.upper()
 
@@ -228,7 +228,8 @@ def dispatch_selection(selection):
               "custom dataset and train a model using this dataset. Before the training task, our system copies\n"
               "user dataset into training sets folder, making it available for future calls of \"2)\" command.\n"
               "Before performing the train task, the system rescales, augments and encodes the given dataset.\n"
-              "The provided dataset must have only 30-bp sequences, otherwhise the system will give an error.")
+              "The provided dataset must have only 23-bp sequences (20 nucleotides + PAM), otherwhise the system\n"
+              "will give an error.")
 
         # If some model weights have been saved
         if os.path.isdir(ds.model_weights_folder):

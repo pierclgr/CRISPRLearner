@@ -33,3 +33,4 @@ varshney_id = "varshney2015"
 gagnon_id = "gagnon2014"
 
 model_weights_folder = "weights/"
+model_histories_folder = "histories/"
