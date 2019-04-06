@@ -72,7 +72,7 @@ def dispatch_selection(selection):
     elif selection == "2":
 
         # Ask user to insert the dataset path
-        print("Insert your dataset path")
+        print("Insert your dataset path (dataset must have 23-bp (20-bp + PAM) sequences only)")
         path = input()
 
         # Create training set folder if it does not exist
