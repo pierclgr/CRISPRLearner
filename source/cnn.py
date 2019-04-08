@@ -215,7 +215,7 @@ def plot_history(history, dataset):
 
     :param history: history of model to plot
     :param dataset: dataset name
-    :return:
+    :return: None
     """
 
     # Create histories folder if it does not exist
