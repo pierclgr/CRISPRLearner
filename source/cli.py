@@ -95,6 +95,7 @@ def dispatch_selection(selection):
         rescaled_set_file = ds.rescaled_train_set_folder + os.path.basename(path)
         rescale(ds.training_set_folder + os.path.basename(path))
 
+        """
         # Create augmented sets folder if it does not exist
         if not os.path.isdir(ds.augmented_set_folder):
             os.mkdir(ds.augmented_set_folder)
@@ -106,10 +107,15 @@ def dispatch_selection(selection):
         # Augment dataset given by user
         augmented_set_file = ds.augmented_train_set_folder + os.path.basename(path)
         augment(rescaled_set_file)
+        
+        """
 
         # Encode dataset given by user
-        sequence_array, efficiency_array = encode(augmented_set_file)
-        encoded_set = [sequence_array, efficiency_array, os.path.splitext(os.path.basename(augmented_set_file))[0]]
+        # sequence_array, efficiency_array = encode(augmented_set_file)
+        # encoded_set = [sequence_array, efficiency_array, os.path.splitext(os.path.basename(augmented_set_file))[0]]
+
+        sequence_array, efficiency_array = encode(rescaled_set_file)
+        encoded_set = [sequence_array, efficiency_array, os.path.splitext(os.path.basename(rescaled_set_file))[0]]
 
         # Ask if user wants to save model weights
         print("Do you want to save model weights? (Y/N)")

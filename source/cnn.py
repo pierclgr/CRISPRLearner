@@ -7,7 +7,7 @@ from scipy.stats import spearmanr
 from sklearn.utils import shuffle
 from sklearn.model_selection import train_test_split
 from source.data_manager import extract_all_sets, rescale_all_sets, augment_all_sets, \
-    encode_all_augmented_sets
+    encode_all_augmented_sets, encode_all_sets
 import matplotlib.pyplot as plt
 
 
@@ -165,11 +165,15 @@ def train_all_models(verbose=1, save=True):
     # Rescale all sets in training sets folder
     rescale_all_sets()
 
+    """
     # Augment all sets in rescaled training sets folder
     augment_all_sets()
 
     # Encode all sets in augmented training sets folder
     train_sets_array = encode_all_augmented_sets()
+    """
+
+    train_sets_array = encode_all_sets()
 
     # For each augmented training set
     for dataset in train_sets_array:
