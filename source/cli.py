@@ -1,6 +1,6 @@
 # Import libraries and modules
 from source.cnn import train_all_models, train_model, cnn_ontar_reg_model, load_model_weights
-from source.data_manager import augment, encode, rescale, encode_sgrna_sequence
+from source.data_manager import get_dataset, rescale, encode_sgrna_sequence
 import dataset.paths as ds
 import os
 import re
@@ -95,27 +95,8 @@ def dispatch_selection(selection):
         rescaled_set_file = ds.rescaled_train_set_folder + os.path.basename(path)
         rescale(ds.training_set_folder + os.path.basename(path))
 
-        """
-        # Create augmented sets folder if it does not exist
-        if not os.path.isdir(ds.augmented_set_folder):
-            os.mkdir(ds.augmented_set_folder)
-
-        # Create augmented training sets folder if it does not exist
-        if not os.path.isdir(ds.augmented_train_set_folder):
-            os.mkdir(ds.augmented_train_set_folder)
-
-        # Augment dataset given by user
-        augmented_set_file = ds.augmented_train_set_folder + os.path.basename(path)
-        augment(rescaled_set_file)
-        
-        """
-
-        # Encode dataset given by user
-        # sequence_array, efficiency_array = encode(augmented_set_file)
-        # encoded_set = [sequence_array, efficiency_array, os.path.splitext(os.path.basename(augmented_set_file))[0]]
-
-        sequence_array, efficiency_array = encode(rescaled_set_file)
-        encoded_set = [sequence_array, efficiency_array, os.path.splitext(os.path.basename(rescaled_set_file))[0]]
+        # Read rescaled dataset
+        read_dataset = get_dataset(rescaled_set_file)
 
         # Ask if user wants to save model weights
         print("Do you want to save model weights? (Y/N)")
@@ -128,9 +109,9 @@ def dispatch_selection(selection):
 
         # Save weights if users wants to
         if answer == "Y":
-            train_model(dataset=encoded_set, save_weigths=True)
+            train_model(dataset=read_dataset, save_weigths=True)
         elif answer == "N":
-            train_model(dataset=encoded_set, save_weigths=False)
+            train_model(dataset=read_dataset, save_weigths=False)
 
     # If user has selected option "Predict sequence efficiency"
     elif selection == "3":

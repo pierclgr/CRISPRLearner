@@ -4,11 +4,10 @@ import numpy as np
 import dataset.paths as ds
 import os
 from scipy.stats import spearmanr
-from sklearn.utils import shuffle
 from sklearn.model_selection import train_test_split
-from source.data_manager import extract_all_sets, rescale_all_sets, augment_all_sets, \
-    encode_all_augmented_sets, encode_all_sets
+from source.data_manager import extract_all_sets, rescale_all_sets, augment, encode, get_all_rescaled_sets
 import matplotlib.pyplot as plt
+import time
 
 
 def cnn_ontar_reg_model():
@@ -91,7 +90,6 @@ def prepare_set(dataset):
 
     features = np.array(dataset[0])
     labels = np.array(dataset[1])
-    features = np.reshape(features, features.shape + (1,))
 
     return features, labels, dataset[2]
 
@@ -109,9 +107,38 @@ def train_model(dataset, save_weigths=True, verbose=1):
     # Prepare the given training set for training
     features, labels, name = prepare_set(dataset)
 
-    # Randomly shuffle the training set
-    features, labels = shuffle(features, labels)
+    # Split the training set into training and validation set (80 % / 20 %)
+    train_features, val_features, train_labels, val_labels = train_test_split(features, labels, test_size=0.2,
+                                                                              shuffle=True)
+    # Agument training partition
+    train_features, train_labels = augment(train_features, train_labels)
 
+    # Encode training partition
+    train_features = encode(train_features)
+
+    # Normalize validation features
+    v_feat = []
+    v_lab = []
+    for i in range(len(val_features)):
+        v_feat.append(str(val_features[i][0]))
+        v_lab.append(float(val_labels[i]))
+    val_features = v_feat
+    val_labels = v_lab
+
+    # Encode validation features
+    val_features = encode(val_features)
+
+    # Convert to np array
+    train_features = np.array(train_features)
+    train_labels = np.array(train_labels)
+    val_features = np.array(val_features)
+    val_labels = np.array(val_labels)
+
+    # Reshape for training
+    train_features = np.reshape(train_features, train_features.shape + (1,))
+    val_features = np.reshape(val_features, val_features.shape + (1,))
+
+    # Start training procedure
     print("Training on", name)
 
     early_stopping = tf.keras.callbacks.EarlyStopping(monitor="val_loss", patience=100, mode="min", verbose=verbose)
@@ -119,13 +146,13 @@ def train_model(dataset, save_weigths=True, verbose=1):
     # Generate a cnn regression model
     model = cnn_ontar_reg_model()
 
-    # Split the training set into training and validation set (80 % / 20 %)
-    train_features, val_features, train_labels, val_labels = train_test_split(features, labels, test_size=0.2,
-                                                                              shuffle=True)
-
     # Start training
+    t = time.time()
     history = model.fit(x=train_features, y=train_labels, epochs=250, verbose=verbose,
                         validation_data=(val_features, val_labels), callbacks=[early_stopping])
+    elapsed = time.time() - t
+
+    print("Time elapsed", elapsed)
 
     # Evaluate model using validation set
     loss = model.evaluate(x=val_features, y=val_labels, verbose=verbose)
@@ -165,17 +192,9 @@ def train_all_models(verbose=1, save=True):
     # Rescale all sets in training sets folder
     rescale_all_sets()
 
-    """
-    # Augment all sets in rescaled training sets folder
-    augment_all_sets()
+    train_sets_array = get_all_rescaled_sets()
 
-    # Encode all sets in augmented training sets folder
-    train_sets_array = encode_all_augmented_sets()
-    """
-
-    train_sets_array = encode_all_sets()
-
-    # For each augmented training set
+    # For each training set
     for dataset in train_sets_array:
         # Train a model using the current dataset
         train_model(dataset=dataset, save_weigths=save, verbose=verbose)

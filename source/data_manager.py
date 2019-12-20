@@ -510,145 +510,119 @@ def encode_sgrna_sequence(sequence):
         return one_hot_matrix
 
 
-def encode(dataset):
+def encode(train_features):
     """
     Encode the given dataset sequences
 
-    :param dataset: path of the dataset file to encode
-    :return: a list of encoded sequences and a list of their respective efficiencies
+    :param train_features: list of training sequences to encode
+    :return: a list of encoded sequences
     """
-
-    # Open the given dataset file
-    dataset_file = open(dataset, 'r')
-    dataser_reader = csv.reader(dataset_file, delimiter='\t')
 
     # Create an empty list of encoded sequences and an empty list of their respective efficiencies
     sequence_array = []
-    efficiency_array = []
 
     # For each row in the dataset file
-    for row in dataser_reader:
+    for elem in train_features:
         # Encode the current sequence and add it to the encoded sequences list
-        sequence_array.append(encode_sgrna_sequence(str(row[0])))
+        sequence_array.append(encode_sgrna_sequence(str(elem)))
 
-        # Add the current sequence efficiency to the efficiency list
+    return sequence_array
+
+
+def get_dataset(dataset):
+    """
+    Read given dataset
+
+    :param dataset: path of dataset to read
+    :return: read dataset
+    """
+
+    # Create an empty list of datasets
+    datasets_array = []
+
+    # For each dataset in the rescaled training sets folder
+    file = str(dataset)
+
+    # Open the given dataset file
+    dataset_file = open(file, 'r')
+    dataser_reader = csv.reader(dataset_file, delimiter='\t')
+
+    # Create an empty list of sequences and an empty list of their respective efficiencies
+    sequence_array = []
+    efficiency_array = []
+
+    dset = []
+
+    for row in dataser_reader:
+        # Add current sequence to the encoded sequences list
+        sequence_array.append(str(row[0]))
+
+        # Add current sequence efficiency to the efficiency list
         efficiency_array.append(float(row[1]))
 
-    # Close dataset file
-    dataset_file.close()
+    # Add the dataset and its name to the encoded dataset list
+    dset.append([sequence_array, efficiency_array, os.path.splitext(os.path.basename(file))[0]])
 
-    return sequence_array, efficiency_array
+    return dset
 
 
-def encode_all_augmented_sets():
+def get_all_rescaled_sets():
     """
-    Encode all sequences of all sets in the augmented training sets folder
+    Read all the rescaled sets
 
-    :return: a list of encoded datasets
+    :return: a list of datasets loaded from file
     """
 
-    # Create an empty list of encoded datasets
+    # Create an empty list of datasets
     datasets_array = []
-
-    # For each dataset in the augmented training sets folder
-    for (_, _, filenames) in os.walk(ds.augmented_train_set_folder):
-        for elem in filenames:
-            file = ds.augmented_train_set_folder + str(elem)
-
-            # Encode the current dataset
-            sequence_array, efficiency_array = encode(file)
-
-            # Add the encoded dataset and its name to the encoded dataset list
-            datasets_array.append([sequence_array, efficiency_array, os.path.splitext(os.path.basename(file))[0]])
-
-    return datasets_array
-
-
-def encode_all_sets():
-    """
-    Encode all sequences of all sets in the rescaled training sets folder
-
-    :return: a list of encoded datasets
-    """
-
-    # Create an empty list of encoded datasets
-    datasets_array = []
-
-    # For each dataset in the augmented training sets folder
-    for (_, _, filenames) in os.walk(ds.rescaled_train_set_folder):
-        for elem in filenames:
-            file = ds.rescaled_train_set_folder + str(elem)
-
-            # Encode the current dataset
-            sequence_array, efficiency_array = encode(file)
-
-            # Add the encoded dataset and its name to the encoded dataset list
-            datasets_array.append([sequence_array, efficiency_array, os.path.splitext(os.path.basename(file))[0]])
-
-    return datasets_array
-
-
-def augment_all_sets():
-    """
-    Augment all sets in the rescaled training sets folder
-
-    :return: None
-    """
-
-    # Create an augmented sets folder if it does not exist
-    if not os.path.isdir(ds.augmented_set_folder):
-        os.mkdir(ds.augmented_set_folder)
-
-    # Create an augmented training sets folder if it does not exist
-    if not os.path.isdir(ds.augmented_train_set_folder):
-        os.mkdir(ds.augmented_train_set_folder)
 
     # For each dataset in the rescaled training sets folder
     for (_, _, filenames) in os.walk(ds.rescaled_train_set_folder):
         for elem in filenames:
             file = ds.rescaled_train_set_folder + str(elem)
 
-            # Augment the current dataset
-            augment(file)
+            # Open the given dataset file
+            dataset_file = open(file, 'r')
+            dataser_reader = csv.reader(dataset_file, delimiter='\t')
+
+            # Create an empty list of sequences and an empty list of their respective efficiencies
+            sequence_array = []
+            efficiency_array = []
+
+            for row in dataser_reader:
+                # Add current sequence to the encoded sequences list
+                sequence_array.append(str(row[0]))
+
+                # Add current sequence efficiency to the efficiency list
+                efficiency_array.append(float(row[1]))
+
+            # Add the dataset and its name to the encoded dataset list
+            datasets_array.append([sequence_array, efficiency_array, os.path.splitext(os.path.basename(file))[0]])
+
+    return datasets_array
 
 
-def augment(dataset):
+def augment(train_features, train_labels):
     """
     Augment the given dataset sequences generating permutations in the first two position of the PAM-distal region
     (5' end)
 
-    :param dataset: path of the dataset file to augment
-    :return: None
+    :param train_features: list of training sequences
+    :param train_labels: list of training labels
+    :return: a list of augmented sequences and a list of augmented efficiencies
     """
 
-    # Open given dataset file and reader
-    dataset_file = open(dataset, 'r')
-    dataser_reader = csv.reader(dataset_file, delimiter='\t')
+    # Create empty augmented sequences and efficiencies
+    augmented_sequences = []
+    augmented_efficiencies = []
 
-    augmented_file_name = ds.augmented_train_set_folder + str(os.path.basename(dataset))
+    if len(train_features) == len(train_labels):
+        for i in range(len(train_features)):
+            augmented_sequences = augmented_sequences + augment_sgrna_sequence(str(train_features[i][0]))
 
-    # Create the augmented dataset file if it does not exist
-    if not os.path.isfile(augmented_file_name):
-        augmented_dataset_file = open(augmented_file_name, 'w')
-        augmented_dataset_writer = csv.writer(augmented_dataset_file, delimiter='\t', quotechar='"',
-                                              quoting=csv.QUOTE_MINIMAL)
+            augmented_efficiencies = augmented_efficiencies + ([float(train_labels[i])] * 16)
 
-        # For each row in the given dataset
-        for row in dataser_reader:
-
-            # Generate a list of augmented sequences of the current sequence
-            augmented_sequences = augment_sgrna_sequence(str(row[0]))
-
-            # For each sequence in the augmented sequences list
-            for sequence in augmented_sequences:
-                # Write the current augmented sequence with the original sequence efficiency to the augmented set file
-                augmented_dataset_writer.writerow([sequence, float(row[1])])
-
-        # Close augmented set file
-        augmented_dataset_file.close()
-
-    # Close given dataset file
-    dataset_file.close()
+    return augmented_sequences, augmented_efficiencies
 
 
 def augment_sgrna_sequence(sequence):
