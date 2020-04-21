@@ -94,6 +94,7 @@ def dispatch_selection(selection):
         # Rescale dataset given by user
         rescaled_set_file = ds.rescaled_train_set_folder + os.path.basename(path)
         rescale(ds.training_set_folder + os.path.basename(path))
+        print(rescaled_set_file)
 
         # Read rescaled dataset
         read_dataset = get_dataset(rescaled_set_file)
@@ -109,9 +110,9 @@ def dispatch_selection(selection):
 
         # Save weights if users wants to
         if answer == "Y":
-            train_model(dataset=read_dataset, save_weigths=True)
+            train_model(dataset=read_dataset[0], save_weigths=True)
         elif answer == "N":
-            train_model(dataset=read_dataset, save_weigths=False)
+            train_model(dataset=read_dataset[0], save_weigths=False)
 
     # If user has selected option "Predict sequence efficiency"
     elif selection == "3":
