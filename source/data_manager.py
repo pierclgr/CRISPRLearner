@@ -160,24 +160,13 @@ def extract_all_sets(dataset=ds.default_dataset_path):
                 # Extract the 23-bp sequence from longSeq column
                 seq = str(line[2])
 
-                if len(seq) == 23:
-                    if seq[len(seq) - 1] == 'G' and seq[len(seq) - 2] == 'G':
-                        extracted_sequence = seq
-                    else:
+                if len(seq) <= 23:
+                    long_seq = str(line[6])
+                    index = long_seq.find(seq)
+                    extracted_sequence = line[6][index:index + 23]
+                    if not extracted_sequence[len(extracted_sequence) - 1] == 'G' or not extracted_sequence[len(
+                            extracted_sequence) - 2] == 'G':
                         break
-                elif len(seq) <= 23:
-                    if seq[len(seq) - 1] == 'G' and seq[len(seq) - 2] == 'G':
-                        long_seq = str(line[6])
-                        index = long_seq.find(seq)
-                        start_index = index - (23 - len(seq))
-                        extracted_sequence = line[6][start_index:start_index + 23]
-                    else:
-                        long_seq = str(line[6])
-                        index = long_seq.find(seq)
-                        extracted_sequence = line[6][index:index + 23]
-                        if not extracted_sequence[len(extracted_sequence) - 1] == 'G' or not extracted_sequence[len(
-                                extracted_sequence) - 2] == 'G':
-                            break
                 else:
                     break
 
@@ -190,24 +179,13 @@ def extract_all_sets(dataset=ds.default_dataset_path):
                 # Extract the 23-bp sequence from longSeq column
                 seq = str(line[2])
 
-                if len(seq) == 23:
-                    if seq[len(seq) - 1] == 'G' and seq[len(seq) - 2] == 'G':
-                        extracted_sequence = seq
-                    else:
+                if len(seq) <= 23:
+                    long_seq = str(line[6])
+                    index = long_seq.find(seq)
+                    extracted_sequence = line[6][index:index + 23]
+                    if not extracted_sequence[len(extracted_sequence) - 1] == 'G' or not extracted_sequence[len(
+                            extracted_sequence) - 2] == 'G':
                         break
-                elif len(seq) <= 23:
-                    if seq[len(seq) - 1] == 'G' and seq[len(seq) - 2] == 'G':
-                        long_seq = str(line[6])
-                        index = long_seq.find(seq)
-                        start_index = index - (23 - len(seq))
-                        extracted_sequence = line[6][start_index:start_index + 23]
-                    else:
-                        long_seq = str(line[6])
-                        index = long_seq.find(seq)
-                        extracted_sequence = line[6][index:index + 23]
-                        if not extracted_sequence[len(extracted_sequence) - 1] == 'G' or not extracted_sequence[len(
-                                extracted_sequence) - 2] == 'G':
-                            break
                 else:
                     break
 
